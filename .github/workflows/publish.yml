@@ -26,4 +26,4 @@ jobs:
       uses: JS-DevTools/npm-publish@v1
       with:
         token: ${{ secrets.NPM_TOKEN }}
-      package: packages/babel-plugin-why-did-you-update/package.json
+        package: packages/babel-plugin-why-did-you-update/package.json
