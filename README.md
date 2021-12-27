@@ -49,6 +49,8 @@ If we click `Plus` button a few times, we can see the result:
 
 ![overview](./docs/overview.png)
 
+In above table, you can see how many times `watch` or `computed` has been called and how long it has been running. We can use those information to find out which `watch` or `computed` has useless/repeated/unexpected calls and which `watch` or `computed` is the bottleneck of performance.
+
 ## Install
 
 1. `yarn add babel-plugin-why-did-you-update`.
