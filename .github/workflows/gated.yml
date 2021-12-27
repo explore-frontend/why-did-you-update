@@ -1,0 +1,36 @@
+name: Gated Build
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Yarn install
+      run: yarn
+    - name: Build shared
+      run: yarn build
+      working-directory: packages/shared
+    - name: Build babel plugin
+      run: yarn build
+      working-directory: packages/babel-plugin-why-did-you-update
+    - name: Build chrome extension
+      run: yarn package
+      working-directory: packages/extensions
+    - name: Upload babel plugin
+      uses: actions/upload-artifact@v2.3.1
+      with:
+        name: plugin
+        path: packages/babel-plugin-why-did-you-update/dist
+    - name: Upload chrome extension
+      uses: actions/upload-artifact@v2.3.1
+      with:
+        name: extension
+        path: packages/extensions/ext

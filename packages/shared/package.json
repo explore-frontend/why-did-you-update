@@ -1,0 +1,15 @@
+{
+    "name": "@why-did-you-update/shared",
+    "main": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "version": "0.0.1",
+    "devDependencies": {
+        "esbuild": "^0.14.7",
+        "typescript": "^4.5.4"
+    },
+    "scripts": {
+        "build:dts": "tsc",
+        "build:bundle": "node ./scripts/build.js",
+        "build": "yarn build:bundle && yarn build:dts"
+    }
+}

@@ -104,3 +104,8 @@ dist
 .tern-port
 
 .DS_Store
+
+yarn.lock
+
+*.crx
+*.pem
