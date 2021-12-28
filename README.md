@@ -63,6 +63,7 @@ module.exports = {
 };
 ```
 3. Unzip extension and [load it in Chrome](https://developer.chrome.com/docs/extensions/mv3/getstarted/#unpacked). 
+    1. You can download nightly build of Chrome extension at [CI](https://github.com/kwai-explore/why-did-you-update/actions/workflows/gated.yml) artifacts.
 4. Build or serve your project.
 5. Open your project with Chrome.
 6. Open `why did you update` tab in Chrome devtools.
