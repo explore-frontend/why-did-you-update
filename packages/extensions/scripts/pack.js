@@ -4,7 +4,7 @@ const path = require("path");
 const archiver = require("archiver");
 
 const rootPath = path.resolve(__dirname, "../");
-const outputPath =  path.join(rootPath, "ext");
+const outputPath = path.join(rootPath, "ext");
 const outputFilePath = path.join(outputPath, "ext.zip");
 
 const loaderHtmlFilePath = path.join(rootPath, "loader.html");
@@ -16,7 +16,10 @@ const distJSGlobPattern = "dist/**/**.js";
 const distCSSGlobPattern = "dist/**/**.css";
 const distHTMLGlobPattern = "dist/**/**.html";
 
-fs.mkdirSync(outputPath);
+if (!fs.existsSync(outputPath)) {
+  fs.mkdirSync(outputPath);
+}
+
 const output = fs.createWriteStream(outputFilePath);
 const archive = archiver("zip");
 

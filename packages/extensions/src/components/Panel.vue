@@ -1,6 +1,11 @@
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
-import { getInjectedFlag, getRecords, resetRecords } from "../bridge/record";
+import { onBeforeUnmount, onMounted, ref } from "vue";
+import {
+  getInjectedFlag,
+  getRecords,
+  resetRecords,
+  reloadAndResetRecords,
+} from "../bridge/record";
 import { Result } from "@/types";
 import { aggregateResult } from "./aggregate";
 import { NAlert, NDataTable, NButton, NSpace } from "naive-ui";
@@ -10,14 +15,34 @@ import { TableColumn } from "naive-ui/lib/data-table/src/interface";
 const recording = ref(false);
 const records = ref<Result[]>([]);
 const injected = ref(true);
+const proMode = ref(false);
+
+const CtrlKeyCode = "Control";
+const onKeyUp = (e: KeyboardEvent) => {
+  if (e.key === CtrlKeyCode) {
+    proMode.value = !proMode.value;
+  }
+};
 
 onMounted(async () => {
   const injectedFlag = await getInjectedFlag();
   injected.value = injectedFlag;
+
+  document.addEventListener("keyup", onKeyUp);
+});
+
+onBeforeUnmount(() => {
+  document.removeEventListener("keyup", onKeyUp);
 });
 
 const onStartRecording = async () => {
   await resetRecords();
+  records.value = [];
+  recording.value = true;
+};
+
+const onStartReloadAndRecording = async () => {
+  reloadAndResetRecords();
   records.value = [];
   recording.value = true;
 };
@@ -131,12 +156,22 @@ const pagination = {
     <n-space vertical v-else>
       <n-space>
         <n-button
+          v-if="!proMode"
           size="small"
           type="primary"
           :disabled="recording"
           :loading="recording"
           @click="onStartRecording"
           >{{ recording ? "Recording" : "Start" }}</n-button
+        >
+        <n-button
+          v-else
+          size="small"
+          type="primary"
+          :disabled="recording"
+          :loading="recording"
+          @click="onStartReloadAndRecording"
+          >{{ recording ? "Recording" : "Reload and Start" }}</n-button
         >
         <n-button size="small" :disabled="!recording" @click="onStopRecording"
           >End</n-button

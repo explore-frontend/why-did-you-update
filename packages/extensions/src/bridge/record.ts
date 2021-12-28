@@ -1,35 +1,40 @@
 import { FunctionCallRecord } from "@why-did-you-update/shared";
 
-export async function resetRecords() {
-  return new Promise((resolve, reject) => {
-    const code = `
-  (function () {
-    window.__why_did_you_update_records = [];
-  })()`;
+const resetRecordsCode = `
+(function () {
+  window.__why_did_you_update_records = [];
+})()`;
 
-    chrome.devtools.inspectedWindow.eval(code, (result, error) => {
+const getRecordsCode = `
+(function(){
+  if (window.__why_did_you_update_records) {
+    const result = window.__why_did_you_update_records
+    window.__why_did_you_update_records = undefined;
+    return result
+  }
+  return []
+})()`;
+
+const getInjectFlagCode = `
+(function(){
+  return !!window.__why_did_you_update
+})()`;
+
+export async function resetRecords(): Promise<void> {
+  return new Promise((resolve, reject) => {
+    chrome.devtools.inspectedWindow.eval(resetRecordsCode, (_, error) => {
       if (error) {
         reject(error);
       } else {
-        resolve(result);
+        resolve();
       }
     });
   });
 }
 
-export async function getRecords() {
-  return new Promise<FunctionCallRecord[]>((resolve, reject) => {
-    const code = `
-  (function(){
-    if (window.__why_did_you_update_records) {
-      const result = window.__why_did_you_update_records
-      window.__why_did_you_update_records = undefined;
-      return result
-    }
-    return []
-  })()`;
-
-    chrome.devtools.inspectedWindow.eval(code, (result, error) => {
+export async function getRecords(): Promise<FunctionCallRecord[]> {
+  return new Promise((resolve, reject) => {
+    chrome.devtools.inspectedWindow.eval(getRecordsCode, (result, error) => {
       if (error) {
         reject(error);
       } else {
@@ -39,19 +44,20 @@ export async function getRecords() {
   });
 }
 
-export async function getInjectedFlag() {
-  return new Promise<boolean>((resolve, reject) => {
-    const code = `
-  (function(){
-    return !!window.__why_did_you_update
-  })()`;
-
-    chrome.devtools.inspectedWindow.eval(code, (result, error) => {
+export async function getInjectedFlag(): Promise<boolean> {
+  return new Promise((resolve, reject) => {
+    chrome.devtools.inspectedWindow.eval(getInjectFlagCode, (result, error) => {
       if (error) {
         reject(error);
       } else {
         resolve(result as boolean);
       }
     });
+  });
+}
+
+export function reloadAndResetRecords(): void {
+  chrome.devtools.inspectedWindow.reload({
+    injectedScript: resetRecordsCode,
   });
 }
