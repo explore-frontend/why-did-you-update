@@ -1,7 +1,7 @@
 import { Result } from "@/types";
 import { FunctionCallRecord } from "@why-did-you-update/shared";
 
-export function aggregateResult(records: FunctionCallRecord[]) {
+export function aggregateResult(records: FunctionCallRecord[]): Result[] {
   const map = new Map<number, FunctionCallRecord[]>();
   records.forEach((record) => {
     const list = map.get(record.info.id) ?? [];

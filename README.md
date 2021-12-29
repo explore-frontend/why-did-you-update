@@ -66,8 +66,9 @@ module.exports = {
   plugins: ["why-did-you-update"],
 };
 ```
-3. Unzip extension and [load it in Chrome](https://developer.chrome.com/docs/extensions/mv3/getstarted/#unpacked). 
-    1. You can download nightly build of Chrome extension at [CI](https://github.com/kwai-explore/why-did-you-update/actions/workflows/gated.yml) artifacts.
+3. Install Chrome extension [WhyDidYouUpdate](https://chrome.google.com/webstore/detail/why-did-you-update-extens/lkajnbciogljakpdeohonigkppjjkpio)
+    1. For nightly version, youcan unzip extension and [load it in Chrome](https://developer.chrome.com/docs/extensions/mv3/getstarted/#unpacked). 
+        1. You can download nightly build of Chrome extension at [CI](https://github.com/kwai-explore/why-did-you-update/actions/workflows/gated.yml) artifacts.
 4. Build or serve your project.
 5. Open your project with Chrome.
 6. Open `why did you update` tab in Chrome devtools.
