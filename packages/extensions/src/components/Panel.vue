@@ -6,22 +6,23 @@ import {
   resetRecords,
   reloadAndResetRecords,
 } from "../bridge/record";
-import { Result } from "@/types";
-import { aggregateResult } from "./aggregate";
 import {
   NAlert,
-  NDataTable,
   NButton,
   NSpace,
   NButtonGroup,
   NDropdown,
   MenuOption,
-  DataTableColumn,
+  NTabs,
+  NTabPane,
 } from "naive-ui";
-import { Flush, Types } from "@why-did-you-update/shared";
+import RecordTable from "./RecordTable.vue";
+import { FunctionCallRecord } from "@why-did-you-update/shared";
+import TimelineTable from "./TimelineTable.vue";
+import { TabKeys } from "@/types";
 
 const recording = ref(false);
-const records = ref<Result[]>([]);
+const records = ref<FunctionCallRecord[]>([]);
 const injected = ref(true);
 
 onMounted(async () => {
@@ -43,100 +44,12 @@ const onStartReloadAndRecording = async () => {
 
 const onStopRecording = async () => {
   const results = await getRecords();
-  records.value = aggregateResult(results);
+  records.value = results;
   recording.value = false;
 };
 
 const onClearRecords = () => {
   records.value = [];
-};
-
-const columns: DataTableColumn<Result>[] = [
-  {
-    title: "Id",
-    key: "id",
-  },
-  {
-    title: "Position",
-    key: "filename",
-    render: (row) => `${row.filename}:${row.line}:${row.column}`,
-  },
-  {
-    title: "Type",
-    key: "type",
-    filterOptions: [
-      {
-        label: Types.computed,
-        value: Types.computed,
-      },
-      {
-        label: Types.watch,
-        value: Types.watch,
-      },
-      {
-        label: Types.watchEffect,
-        value: Types.watchEffect,
-      },
-    ],
-    filter: "default",
-  },
-  {
-    title: "IsAsync",
-    key: "isAsync",
-    render: (row) => (row.isAsync ? "True" : "False"),
-  },
-  {
-    title: "Flush",
-    key: "flush",
-    filterOptions: [
-      {
-        label: Flush.post,
-        value: Flush.post,
-      },
-      {
-        label: Flush.pre,
-        value: Flush.pre,
-      },
-      {
-        label: Flush.sync,
-        value: Flush.sync,
-      },
-    ],
-    filter: "default",
-    render: (row) => row.flush ?? "-",
-  },
-  {
-    title: "Name",
-    key: "name",
-    render: (row) => row.name ?? "-",
-  },
-  {
-    title: "Count",
-    key: "count",
-    sorter: (row1, row2) => row1.count - row2.count,
-  },
-  {
-    title: "Average",
-    key: "averageDuration",
-    sorter: (row1, row2) => row1.averageDuration - row2.averageDuration,
-    render: (row) => `${row.averageDuration} ms`,
-  },
-  {
-    title: "Max",
-    key: "maxDuration",
-    sorter: (row1, row2) => row1.maxDuration - row2.maxDuration,
-    render: (row) => `${row.maxDuration} ms`,
-  },
-  {
-    title: "Sum",
-    key: "sumDuration",
-    sorter: (row1, row2) => row1.sumDuration - row2.sumDuration,
-    render: (row) => `${row.sumDuration} ms`,
-  },
-];
-
-const pagination = {
-  pageSize: 30,
 };
 
 const reloadAndStartKey = "reloadAndStart";
@@ -152,6 +65,7 @@ const onDropDownSelect = (key: string) => {
     onStartReloadAndRecording();
   }
 };
+
 </script>
 <template>
   <div class="container">
@@ -199,13 +113,14 @@ const onDropDownSelect = (key: string) => {
         >
       </n-space>
       <div v-if="!recording">
-        <n-data-table
-          size="small"
-          striped
-          :pagination="pagination"
-          :columns="columns"
-          :data="records"
-        ></n-data-table>
+        <n-tabs size="small" :default-value="TabKeys.Aggregate">
+          <n-tab-pane :name="TabKeys.Aggregate">
+            <record-table :records="records"></record-table>
+          </n-tab-pane>
+          <n-tab-pane :name="TabKeys.Timeline">
+            <timeline-table :records="records"></timeline-table>
+          </n-tab-pane>
+        </n-tabs>
       </div>
     </n-space>
   </div>

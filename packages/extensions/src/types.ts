@@ -12,3 +12,8 @@ export interface Result {
   count: number;
   isAsync: boolean;
 }
+
+export enum TabKeys {
+  Aggregate = "Update Aggregate",
+  Timeline = "Timeline",
+}
