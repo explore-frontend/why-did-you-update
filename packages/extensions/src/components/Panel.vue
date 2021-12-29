@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, ref } from "vue";
+import { onMounted, ref } from "vue";
 import {
   getInjectedFlag,
   getRecords,
@@ -8,31 +8,25 @@ import {
 } from "../bridge/record";
 import { Result } from "@/types";
 import { aggregateResult } from "./aggregate";
-import { NAlert, NDataTable, NButton, NSpace } from "naive-ui";
+import {
+  NAlert,
+  NDataTable,
+  NButton,
+  NSpace,
+  NButtonGroup,
+  NDropdown,
+  MenuOption,
+  DataTableColumn,
+} from "naive-ui";
 import { Flush, Types } from "@why-did-you-update/shared";
-import { TableColumn } from "naive-ui/lib/data-table/src/interface";
 
 const recording = ref(false);
 const records = ref<Result[]>([]);
 const injected = ref(true);
-const proMode = ref(false);
-
-const CtrlKeyCode = "Control";
-const onKeyUp = (e: KeyboardEvent) => {
-  if (e.key === CtrlKeyCode) {
-    proMode.value = !proMode.value;
-  }
-};
 
 onMounted(async () => {
   const injectedFlag = await getInjectedFlag();
   injected.value = injectedFlag;
-
-  document.addEventListener("keyup", onKeyUp);
-});
-
-onBeforeUnmount(() => {
-  document.removeEventListener("keyup", onKeyUp);
 });
 
 const onStartRecording = async () => {
@@ -57,7 +51,7 @@ const onClearRecords = () => {
   records.value = [];
 };
 
-const columns: TableColumn<Result>[] = [
+const columns: DataTableColumn<Result>[] = [
   {
     title: "Id",
     key: "id",
@@ -144,6 +138,20 @@ const columns: TableColumn<Result>[] = [
 const pagination = {
   pageSize: 30,
 };
+
+const reloadAndStartKey = "reloadAndStart";
+const dropdownOptions: MenuOption[] = [
+  {
+    label: "Reload and Start",
+    key: reloadAndStartKey,
+  },
+];
+
+const onDropDownSelect = (key: string) => {
+  if (key === reloadAndStartKey) {
+    onStartReloadAndRecording();
+  }
+};
 </script>
 <template>
   <div class="container">
@@ -155,24 +163,29 @@ const pagination = {
     </div>
     <n-space vertical v-else>
       <n-space>
-        <n-button
-          v-if="!proMode"
-          size="small"
-          type="primary"
-          :disabled="recording"
-          :loading="recording"
-          @click="onStartRecording"
-          >{{ recording ? "Recording" : "Start" }}</n-button
-        >
-        <n-button
-          v-else
-          size="small"
-          type="primary"
-          :disabled="recording"
-          :loading="recording"
-          @click="onStartReloadAndRecording"
-          >{{ recording ? "Recording" : "Reload and Start" }}</n-button
-        >
+        <n-button-group size="small">
+          <n-button
+            size="small"
+            type="primary"
+            primary
+            strong
+            :disabled="recording"
+            :loading="recording"
+            @click="onStartRecording"
+            >{{ recording ? "Recording" : "Start" }}</n-button
+          >
+          <n-dropdown
+            :options="dropdownOptions"
+            :disabled="recording"
+            trigger="click"
+            @select="onDropDownSelect"
+          >
+            <n-button primary type="primary" size="small" :disabled="recording"
+              >...</n-button
+            >
+          </n-dropdown>
+        </n-button-group>
+
         <n-button size="small" :disabled="!recording" @click="onStopRecording"
           >End</n-button
         >

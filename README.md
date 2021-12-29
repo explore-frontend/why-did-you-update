@@ -51,9 +51,9 @@ If we click `Start` in devtools panel. And then click `Plus` button a few times.
 
 In above table, you can see how many times `watch` or `computed` has been called and how long it has been running. We can use those information to find out which `watch` or `computed` has useless/repeated/unexpected calls and which `watch` or `computed` is the bottleneck of performance.
 
-#### Pro Mode
-In `Pro Mode`, you can use `Reload and Start` to monit your app when it first render.
-Press `Control` to enter `Pro Mode`.
+### FPM
+
+You can also use `Reload and Start` (in the dropdown) to monit your app when it first render.
 
 ## Install
 
