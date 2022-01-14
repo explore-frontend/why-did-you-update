@@ -112,6 +112,7 @@ const columns: DataTableColumn<FunctionCallRecord>[] = [
       virtual-scroll
       :columns="columns"
       :data="normalizedRecords"
+      :scroll-x="900"
     ></n-data-table>
   </div>
 </template>

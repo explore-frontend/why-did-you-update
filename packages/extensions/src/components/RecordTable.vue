@@ -17,6 +17,7 @@ const columns: DataTableColumn<Result>[] = [
   {
     title: "Id",
     key: "id",
+    fixed: "left",
   },
   {
     title: "Position",
@@ -108,5 +109,6 @@ const pagination = {
     :pagination="pagination"
     :columns="columns"
     :data="results"
+    :scroll-x="900"
   ></n-data-table>
 </template>
